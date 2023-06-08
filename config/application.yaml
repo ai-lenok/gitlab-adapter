@@ -1,0 +1,5 @@
+server:
+  port: 8080
+gitlab:
+  host: "https://gitlab.com"
+  token: "change-me"
