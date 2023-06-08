@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/ai-lenok/gitlab-adapter/maintainer"
 	"github.com/ai-lenok/gitlab-adapter/properties"
+	"github.com/ai-lenok/gitlab-adapter/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"io/ioutil"
@@ -73,7 +74,7 @@ func init() {
 	createRepoCmd.MarkPersistentFlagRequired("namespace")
 
 	deleteRepoFlags := deleteRepoCmd.PersistentFlags()
-	deleteRepoFlags.StringVar(&reqDeleteRepo.Id, "project-id", "", "Repository ID")
+	deleteRepoFlags.StringVar(&reqDeleteRepo.ProjectId, "project-id", "", "Repository ID")
 	deleteRepoCmd.MarkPersistentFlagRequired("project-id")
 
 	serverFlags := startServerCmd.PersistentFlags()
@@ -157,8 +158,15 @@ func verifyPipelineStatus(cmd *cobra.Command, args []string) {
 }
 
 func startServer(cmd *cobra.Command, args []string) {
-	port, _ := cmd.PersistentFlags().GetInt("server.port")
-	log.Printf("Start server. Viper port: %d. Cmd port: %d.", viper.GetInt("server.port"), port)
+	gitLabConfig := getGitLabConfig()
+
+	err := server.StartServer(
+		&gitLabConfig,
+		viper.GetInt("server.port"))
+
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func Execute() {

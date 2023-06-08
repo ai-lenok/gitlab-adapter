@@ -26,17 +26,19 @@ type ReqCreateRepo struct {
 }
 
 type RespCreateRepo struct {
-	Id                      int
-	Name, Path, Description string
-	PathWithNamespace       string `json:"path_with_namespace"`
-	WebUrl                  string `json:"web_url"`
-	SshUrlToRepo            string `json:"ssh_url_to_repo"`
-	HttpUrlToRepo           string `json:"http_url_to_repo"`
-	CreatorId               int    `json:"creator_id"`
+	Id                int    `json:"id"`
+	Name              string `json:"name"`
+	Path              string `json:"path"`
+	Description       string `json:"description"`
+	PathWithNamespace string `json:"path_with_namespace"`
+	WebUrl            string `json:"web_url"`
+	SshUrlToRepo      string `json:"ssh_url_to_repo"`
+	HttpUrlToRepo     string `json:"http_url_to_repo"`
+	CreatorId         int    `json:"creator_id"`
 }
 
 type ReqDeleteRepo struct {
-	Id string
+	ProjectId string
 }
 
 type ReqListPipelines struct {

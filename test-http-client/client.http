@@ -1,0 +1,39 @@
+GET http://{{host}}/health
+
+{}
+
+###
+POST http://{{host}}/api/v1/create-repo
+Content-Type: application/json
+
+{
+  "name": "test-name",
+  "path": "test-path",
+  "description": "test Description",
+  "namespaceId": "1234567890",
+  "importUrl": ""
+}
+
+###
+POST http://{{host}}/api/v1/delete-repo
+Content-Type: application/json
+
+{
+  "projectId": "1000000000"
+}
+
+### Success
+POST http://{{host}}/api/v1/verify-pipeline-status
+Content-Type: application/json
+
+{
+  "projectId": "1000000000"
+}
+
+### Fail
+POST http://{{host}}/api/v1/verify-pipeline-status
+Content-Type: application/json
+
+{
+  "projectId": "1000000000"
+}

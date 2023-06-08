@@ -13,6 +13,10 @@ Adapter between Learning Management System and GitLab
 * HTTP server
 * Command Line Interface
 
+### HTTP examples
+
+[RESTful client](test-http-client/client.http)
+
 ## Configuration
 
 All necessary configs you can put to `config/application.yaml` file
@@ -29,12 +33,24 @@ Or put on command line parameters
 gitlab-adapter create-repo --namespace 1234567890 --name test-name --path test-path --description "Description repo"
 ```
 
+### HTTP
+
+```shell
+POST http://{{host}}/api/v1/create-repo
+```
+
 ### Delete repository
 
 ### CLI
 
 ```shell
 gitlab-adapter delete-repo --project-id 1000000000
+```
+
+### HTTP
+
+```shell
+POST http://{{host}}/api/v1/delete-repo
 ```
 
 ### Verify that the latest build in the repository was successful
@@ -47,3 +63,12 @@ gitlab-adapter verify-pipeline-status --project-id 1000000000
 
 * Return status 0 - success
 * Return status 1 - failed
+
+### HTTP
+
+```shell
+POST http://{{host}}/api/v1/verify-pipeline-status
+```
+
+* Return status 204 - success
+* Return status 409 - failed

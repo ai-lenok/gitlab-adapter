@@ -39,7 +39,7 @@ func CreateRepo(config *properties.GitLabConfig,
 
 // https://docs.gitlab.com/ee/api/projects.html#delete-project
 func DeleteRepo(config *properties.GitLabConfig, req *properties.ReqDeleteRepo) (*http.Response, error) {
-	resp, err := request("DELETE", config.UrlDeleteProject(req.Id), config, map[string]string{})
+	resp, err := request("DELETE", config.UrlDeleteProject(req.ProjectId), config, map[string]string{})
 	if err != nil {
 		return nil, err
 	}
