@@ -27,7 +27,32 @@ GET http://{{host}}/health
 
 All necessary configs you can put to `config/application.yaml` file
 
+Or put like environment variables with prefix `GA_`
+
 Or put on command line parameters
+
+### Example
+
+#### Config file
+
+```yaml
+gitlab:
+  host: "https://gitlab.com"
+  token: "change-me"
+```
+
+#### Environment variables
+
+```shell
+export GA_GITLAB_HOST="https://gitlab.com"
+export GA_GITLAB_TOKEN="change-me"
+```
+
+#### Command line parameters
+
+```shell
+gitlab-adapter start-server --gitlab.host "https://gitlab.com" --gitlab.token "change-me"
+```
 
 ## Work
 
@@ -91,4 +116,24 @@ docker image build --tag IMAGE_NAME .
 
 ```shell
 docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
+```
+
+## App
+
+### Build
+
+```shell
+make build
+```
+
+### Remove all artefacts
+
+```shell
+make clean
+```
+
+### Run server
+
+```shell
+make start-server
 ```

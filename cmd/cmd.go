@@ -81,6 +81,10 @@ func init() {
 	serverFlags.Int("server.port", 8080, "Server port, default 8080")
 	viper.BindPFlags(serverFlags)
 
+	viper.SetEnvPrefix("ga")
+	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
+
 	rootCmd.AddCommand(verifyPipelineStatusCmd)
 	rootCmd.AddCommand(startServerCmd)
 	rootCmd.AddCommand(createRepoCmd)
