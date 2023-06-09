@@ -3,7 +3,7 @@ GET http://{{host}}/health
 {}
 
 ###
-POST http://{{host}}/api/v1/create-repo
+POST http://{{host}}/api/v1/project
 Content-Type: application/json
 
 {
@@ -15,7 +15,7 @@ Content-Type: application/json
 }
 
 ###
-POST http://{{host}}/api/v1/delete-repo
+DELETE http://{{host}}/api/v1/project
 Content-Type: application/json
 
 {
@@ -23,7 +23,7 @@ Content-Type: application/json
 }
 
 ### Success
-POST http://{{host}}/api/v1/verify-pipeline-status
+POST http://{{host}}/api/v1/project/verify-pipeline
 Content-Type: application/json
 
 {
@@ -31,7 +31,7 @@ Content-Type: application/json
 }
 
 ### Fail
-POST http://{{host}}/api/v1/verify-pipeline-status
+POST http://{{host}}/api/v1/project/verify-pipeline
 Content-Type: application/json
 
 {

@@ -36,7 +36,7 @@ gitlab-adapter create-repo --namespace 1234567890 --name test-name --path test-p
 ### HTTP
 
 ```shell
-POST http://{{host}}/api/v1/create-repo
+POST http://{{host}}/api/v1/project
 ```
 
 ### Delete repository
@@ -50,7 +50,7 @@ gitlab-adapter delete-repo --project-id 1000000000
 ### HTTP
 
 ```shell
-POST http://{{host}}/api/v1/delete-repo
+DELETE http://{{host}}/api/v1/project
 ```
 
 ### Verify that the latest build in the repository was successful
@@ -67,7 +67,7 @@ gitlab-adapter verify-pipeline-status --project-id 1000000000
 ### HTTP
 
 ```shell
-POST http://{{host}}/api/v1/verify-pipeline-status
+POST http://{{host}}/api/v1/project/verify-pipeline
 ```
 
 * Return status 204 - success

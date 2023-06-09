@@ -14,13 +14,14 @@ import (
 var gitLabConfig *properties.GitLabConfig
 
 func StartServer(config *properties.GitLabConfig, port int) error {
+	log.Printf("Start server. Port: %d", port)
 	gitLabConfig = config
 
 	server := gin.Default()
 	server.GET("/health", HealthCheck)
-	server.POST("/api/v1/create-repo", creteRepo)
-	server.POST("/api/v1/delete-repo", deleteRepo)
-	server.POST("/api/v1/verify-pipeline-status", verifyPipelineStatus)
+	server.POST("/api/v1/project", creteRepo)
+	server.DELETE("/api/v1/project", deleteRepo)
+	server.POST("/api/v1/project/verify-pipeline", verifyPipelineStatus)
 
 	return server.Run(fmt.Sprintf(":%d", port))
 }
@@ -29,12 +30,16 @@ func creteRepo(context *gin.Context) {
 	var reqCreateRepo properties.ReqCreateRepo
 
 	if err := context.BindJSON(&reqCreateRepo); err != nil {
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
 		return
 	}
 
 	resp, err := maintainer.CreateRepo(gitLabConfig, &reqCreateRepo)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
+		return
 	}
 
 	log.Println(resp)
@@ -46,38 +51,48 @@ func deleteRepo(context *gin.Context) {
 	var reqDeleteRepo properties.ReqDeleteRepo
 
 	if err := context.BindJSON(&reqDeleteRepo); err != nil {
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
 		return
 	}
 	resp, err := maintainer.DeleteRepo(gitLabConfig, &reqDeleteRepo)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
+		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
+		return
 	}
 	resp.Body.Close()
 
 	log.Println(string(body))
-	context.IndentedJSON(http.StatusAccepted, resp)
+	context.Status(http.StatusAccepted)
 }
 
 func verifyPipelineStatus(context *gin.Context) {
 	var reqListPipelines properties.ReqListPipelines
 
 	if err := context.BindJSON(&reqListPipelines); err != nil {
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
 		return
 	}
 
 	isSuccess, err := maintainer.LastBuildIsSuccess(gitLabConfig, &reqListPipelines)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		context.Status(http.StatusInternalServerError)
+		return
 	}
 	log.Print("is Success: " + strconv.FormatBool(isSuccess))
 	if isSuccess {
-		context.IndentedJSON(http.StatusNoContent, nil)
+		context.Status(http.StatusNoContent)
 	} else {
-		context.IndentedJSON(http.StatusConflict, nil)
+		context.Status(http.StatusConflict)
 	}
 }
 
