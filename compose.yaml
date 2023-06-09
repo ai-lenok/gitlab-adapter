@@ -1,0 +1,11 @@
+version: '3.9'
+services:
+  gitlab-adapter:
+    image: dzx912/gitlab-adapter:1
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./config/:/app/config/
+    environment:
+      GA_GITLAB_HOST: "https://gitlab.com"
+      GA_GITLAB_TOKEN: "change-me"

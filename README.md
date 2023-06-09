@@ -118,6 +118,12 @@ docker image build --tag IMAGE_NAME .
 docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
 ```
 
+#### Docker-compose
+
+```shell
+docker-compose up --detach
+```
+
 ## App
 
 ### Build
