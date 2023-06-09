@@ -143,3 +143,17 @@ make clean
 ```shell
 make start-server
 ```
+
+## Kubernetes
+
+### Run
+
+```shell
+kubectl apply --filename manifest/
+```
+
+### Clean
+
+```shell
+kubectl delete --filename manifest/
+```

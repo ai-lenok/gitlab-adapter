@@ -1,0 +1,11 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: gitlab-adapter
+spec:
+  selector:
+    app: gitlab-adapter
+  ports:
+    - name: adapter-api
+      port: 8080
+      targetPort: http

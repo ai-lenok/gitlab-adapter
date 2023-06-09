@@ -1,0 +1,38 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: gitlab-adapter
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gitlab-adapter
+  template:
+    metadata:
+      labels:
+        app: gitlab-adapter
+    spec:
+      containers:
+        - name: gitlab-adapter-cont
+          image: dzx912/gitlab-adapter:1
+          ports:
+            - name: http
+              containerPort: 8080
+          resources:
+            requests:
+              cpu: "500m"
+            limits:
+              cpu: "800m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+          env:
+            - name: GA_GITLAB_HOST
+              value: "https://gitlab.com"
+            - name: GA_GITLAB_TOKEN
+              value: "change-me"
