@@ -17,6 +17,12 @@ Adapter between Learning Management System and GitLab
 
 [RESTful client](test-http-client/client.http)
 
+### Health check
+
+```shell
+GET http://{{host}}/health
+```
+
 ## Configuration
 
 All necessary configs you can put to `config/application.yaml` file
@@ -72,3 +78,17 @@ POST http://{{host}}/api/v1/project/verify-pipeline
 
 * Return status 204 - success
 * Return status 409 - failed
+
+## Docker
+
+### Build
+
+```shell
+docker image build --tag IMAGE_NAME .
+```
+
+### Run
+
+```shell
+docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
+```

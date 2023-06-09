@@ -1,0 +1,14 @@
+# IntelliJ
+.idea
+*.ipr
+*.iml
+*.iws
+
+.git
+.gitignore
+.dockerignore
+Dockerfile
+README.md
+
+out/
+test-http-client
