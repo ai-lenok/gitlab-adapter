@@ -104,26 +104,6 @@ POST http://{{host}}/api/v1/project/verify-pipeline
 * Return status 204 - success
 * Return status 409 - failed
 
-## Docker
-
-### Build
-
-```shell
-docker image build --tag IMAGE_NAME .
-```
-
-### Run
-
-```shell
-docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
-```
-
-#### Docker-compose
-
-```shell
-docker-compose up --detach
-```
-
 ## App
 
 ### Build
@@ -142,6 +122,26 @@ make clean
 
 ```shell
 make start-server
+```
+
+## Docker
+
+### Build
+
+```shell
+docker image build --tag IMAGE_NAME .
+```
+
+### Run
+
+```shell
+docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
+```
+
+#### Docker-compose
+
+```shell
+docker-compose up --detach
 ```
 
 ## Kubernetes
