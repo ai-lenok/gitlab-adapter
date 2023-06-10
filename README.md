@@ -1,5 +1,7 @@
 # GitLab Adapter
 
+[![Build status](https://github.com/ai-lenok/gitlab-adapter/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/ai-lenok/gitlab-adapter/actions/workflows/workflow.yml)
+
 Adapter between Learning Management System and GitLab
 
 ## Features
