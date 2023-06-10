@@ -8,9 +8,29 @@ import (
 	"net/http"
 )
 
+type Maintainer struct {
+	Config *properties.GitLabConfig
+	Client HttpClient
+}
+
+type HttpClient interface {
+	Do(req *http.Request) (*http.Response, error)
+}
+
+func (m Maintainer) Request(method string,
+	url string,
+	data map[string]string) (*http.Response, error) {
+	jsonData, _ := json.Marshal(data)
+	buffer := bytes.NewBuffer(jsonData)
+
+	req, _ := http.NewRequest(method, url, buffer)
+	req.Header.Add("Authorization", "Bearer "+m.Config.AuthToken)
+	req.Header.Add("Content-Type", "application/json")
+	return m.Client.Do(req)
+}
+
 // https://docs.gitlab.com/ee/api/projects.html#create-project
-func CreateRepo(config *properties.GitLabConfig,
-	req *properties.ReqCreateRepo) (*properties.RespCreateRepo, error) {
+func (m Maintainer) CreateRepo(req *properties.ReqCreateRepo) (*properties.RespCreateRepo, error) {
 	data := map[string]string{
 		"name":         req.Name,
 		"path":         req.Path,
@@ -19,7 +39,7 @@ func CreateRepo(config *properties.GitLabConfig,
 		//"import_url":   importUrl,
 	}
 
-	resp, err := request("POST", config.UrlProjects(), config, data)
+	resp, err := m.Request("POST", m.Config.UrlProjects(), data)
 	if err != nil {
 		return nil, err
 	}
@@ -33,13 +53,13 @@ func CreateRepo(config *properties.GitLabConfig,
 		}
 		return &respCreateRepo, nil
 	} else {
-		return nil, fmt.Errorf("Bad status: %s", resp.Status)
+		return nil, fmt.Errorf("Bad status: %d", resp.StatusCode)
 	}
 }
 
 // https://docs.gitlab.com/ee/api/projects.html#delete-project
-func DeleteRepo(config *properties.GitLabConfig, req *properties.ReqDeleteRepo) (*http.Response, error) {
-	resp, err := request("DELETE", config.UrlDeleteProject(req.ProjectId), config, map[string]string{})
+func (m Maintainer) DeleteRepo(req *properties.ReqDeleteRepo) (*http.Response, error) {
+	resp, err := m.Request("DELETE", m.Config.UrlDeleteProject(req.ProjectId), map[string]string{})
 	if err != nil {
 		return nil, err
 	}
@@ -50,8 +70,8 @@ func DeleteRepo(config *properties.GitLabConfig, req *properties.ReqDeleteRepo) 
 	}
 }
 
-func LastBuildIsSuccess(conf *properties.GitLabConfig, req *properties.ReqListPipelines) (bool, error) {
-	resp, err := ListPipelines(conf, req)
+func (m Maintainer) LastBuildIsSuccess(req *properties.ReqListPipelines) (bool, error) {
+	resp, err := m.ListPipelines(req)
 	if err != nil {
 		return false, err
 	}
@@ -66,20 +86,6 @@ func LastBuildIsSuccess(conf *properties.GitLabConfig, req *properties.ReqListPi
 }
 
 // https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines
-func ListPipelines(config *properties.GitLabConfig, req *properties.ReqListPipelines) (*http.Response, error) {
-	return request("GET", config.UrlPipelines(req.ProjectId), config, map[string]string{})
-}
-
-func request(method string,
-	url string,
-	config *properties.GitLabConfig,
-	data map[string]string) (*http.Response, error) {
-	jsonData, _ := json.Marshal(data)
-	buffer := bytes.NewBuffer(jsonData)
-	client := &http.Client{}
-
-	req, _ := http.NewRequest(method, url, buffer)
-	req.Header.Add("Authorization", "Bearer "+config.AuthToken)
-	req.Header.Add("Content-Type", "application/json")
-	return client.Do(req)
+func (m Maintainer) ListPipelines(req *properties.ReqListPipelines) (*http.Response, error) {
+	return m.Request("GET", m.Config.UrlPipelines(req.ProjectId), map[string]string{})
 }

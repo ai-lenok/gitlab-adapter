@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"github.com/ai-lenok/gitlab-adapter/maintainer"
 	"github.com/ai-lenok/gitlab-adapter/properties"
 	"github.com/ai-lenok/gitlab-adapter/server"
@@ -9,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -110,17 +110,20 @@ func initConfig() {
 	}
 }
 
-func getGitLabConfig() properties.GitLabConfig {
-	return properties.GitLabConfig{
-		Host:      viper.GetString("gitlab.host"),
-		AuthToken: viper.GetString("gitlab.token"),
+func createMaintainer() maintainer.Maintainer {
+	return maintainer.Maintainer{
+		Client: &http.Client{},
+		Config: &properties.GitLabConfig{
+			Host:      viper.GetString("gitlab.host"),
+			AuthToken: viper.GetString("gitlab.token"),
+		},
 	}
 }
 
 func createRepo(cmd *cobra.Command, args []string) {
-	gitLabConfig := getGitLabConfig()
+	m := createMaintainer()
 
-	resp, err := maintainer.CreateRepo(&gitLabConfig, &reqCreateRepo)
+	resp, err := m.CreateRepo(&reqCreateRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -129,9 +132,9 @@ func createRepo(cmd *cobra.Command, args []string) {
 }
 
 func deleteRepo(cmd *cobra.Command, args []string) {
-	gitLabConfig := getGitLabConfig()
+	m := createMaintainer()
 
-	resp, err := maintainer.DeleteRepo(&gitLabConfig, &reqDeleteRepo)
+	resp, err := m.DeleteRepo(&reqDeleteRepo)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -141,16 +144,16 @@ func deleteRepo(cmd *cobra.Command, args []string) {
 	}
 	resp.Body.Close()
 
-	fmt.Println(string(body))
+	log.Println(string(body))
 }
 
 func verifyPipelineStatus(cmd *cobra.Command, args []string) {
-	gitLabConfig := getGitLabConfig()
+	m := createMaintainer()
 
-	log.Printf("Gitlab: %s. Config: %s. Host: %s. Token: %s", viper.Get("gitlab"), gitLabConfig,
+	log.Printf("Gitlab: %s. Config: %s. Host: %s. Token: %s", viper.Get("gitlab"), m.Config,
 		viper.GetString("gitlab.host"), viper.GetString("gitlab.token"))
 
-	isSuccess, err := maintainer.LastBuildIsSuccess(&gitLabConfig, &reqListPipelines)
+	isSuccess, err := m.LastBuildIsSuccess(&reqListPipelines)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -163,10 +166,10 @@ func verifyPipelineStatus(cmd *cobra.Command, args []string) {
 }
 
 func startServer(cmd *cobra.Command, args []string) {
-	gitLabConfig := getGitLabConfig()
+	m := createMaintainer()
 
 	err := server.StartServer(
-		&gitLabConfig,
+		&m,
 		viper.GetInt("server.port"))
 
 	if err != nil {

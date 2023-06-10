@@ -11,11 +11,11 @@ import (
 	"strconv"
 )
 
-var gitLabConfig *properties.GitLabConfig
+var m *maintainer.Maintainer
 
-func StartServer(config *properties.GitLabConfig, port int) error {
+func StartServer(manager *maintainer.Maintainer, port int) error {
 	log.Printf("Start server. Port: %d", port)
-	gitLabConfig = config
+	m = manager
 
 	server := gin.Default()
 	server.GET("/health", HealthCheck)
@@ -35,7 +35,7 @@ func creteRepo(context *gin.Context) {
 		return
 	}
 
-	resp, err := maintainer.CreateRepo(gitLabConfig, &reqCreateRepo)
+	resp, err := m.CreateRepo(&reqCreateRepo)
 	if err != nil {
 		log.Println(err)
 		context.Status(http.StatusInternalServerError)
@@ -55,7 +55,7 @@ func deleteRepo(context *gin.Context) {
 		context.Status(http.StatusInternalServerError)
 		return
 	}
-	resp, err := maintainer.DeleteRepo(gitLabConfig, &reqDeleteRepo)
+	resp, err := m.DeleteRepo(&reqDeleteRepo)
 	if err != nil {
 		log.Println(err)
 		context.Status(http.StatusInternalServerError)
@@ -82,7 +82,7 @@ func verifyPipelineStatus(context *gin.Context) {
 		return
 	}
 
-	isSuccess, err := maintainer.LastBuildIsSuccess(gitLabConfig, &reqListPipelines)
+	isSuccess, err := m.LastBuildIsSuccess(&reqListPipelines)
 	if err != nil {
 		log.Println(err)
 		context.Status(http.StatusInternalServerError)

@@ -2,6 +2,7 @@ BINARY_NAME=gitlab-adapter
 
 build: 
 	mkdir -p out/bin
+	go test -v ./...
 	go build -o out/bin/$(BINARY_NAME) .
 
 clean:
