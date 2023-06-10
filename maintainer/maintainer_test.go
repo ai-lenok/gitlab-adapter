@@ -131,17 +131,6 @@ func mockResponse(pathToFile string) error {
 	return nil
 }
 
-func mockResponseArray(pathToFile string) error {
-	response, err := readResponseArray(pathToFile)
-	if err != nil {
-		return err
-	}
-	GetDoFunc = func(*http.Request) (*http.Response, error) {
-		return response, nil
-	}
-	return nil
-}
-
 func readResponse(pathToFile string) (*http.Response, error) {
 	file, err := os.ReadFile(pathToFile)
 	if err != nil {
@@ -159,6 +148,17 @@ func readResponse(pathToFile string) (*http.Response, error) {
 		StatusCode: response.Status,
 		Body:       io.NopCloser(strings.NewReader(strBody)),
 	}, nil
+}
+
+func mockResponseArray(pathToFile string) error {
+	response, err := readResponseArray(pathToFile)
+	if err != nil {
+		return err
+	}
+	GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return response, nil
+	}
+	return nil
 }
 
 func readResponseArray(pathToFile string) (*http.Response, error) {
