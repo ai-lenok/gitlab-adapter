@@ -137,7 +137,7 @@ docker image build --tag IMAGE_NAME .
 ### Run
 
 ```shell
-docker container run --publish 8080:8080 --volume ./config/:/app/config/ dzx912/gitlab-adapter:1
+docker container run --publish 8080:8080 --volume ./config/:/app/config/ ghcr.io/ai-lenok/gitlab-adapter:main
 ```
 
 #### Docker-compose
