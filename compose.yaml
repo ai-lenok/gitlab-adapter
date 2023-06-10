@@ -1,7 +1,7 @@
 version: '3.9'
 services:
   gitlab-adapter:
-    image: dzx912/gitlab-adapter:1
+    image: ghcr.io/ai-lenok/gitlab-adapter:main
     ports:
       - "8080:8080"
     volumes:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: gitlab-adapter-cont
-          image: dzx912/gitlab-adapter:1
+          image: ghcr.io/ai-lenok/gitlab-adapter:main
           ports:
             - name: http
               containerPort: 8080
