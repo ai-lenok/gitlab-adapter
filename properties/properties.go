@@ -41,6 +41,10 @@ type ReqDeleteRepo struct {
 	ProjectId string
 }
 
+type RespMessage struct {
+	Message string
+}
+
 type ReqListPipelines struct {
 	ProjectId string
 }

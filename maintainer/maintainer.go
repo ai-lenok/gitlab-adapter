@@ -44,30 +44,34 @@ func (m Maintainer) CreateRepo(req *properties.ReqCreateRepo) (*properties.RespC
 		return nil, err
 	}
 	defer resp.Body.Close()
-	if resp.StatusCode == http.StatusOK ||
-		resp.StatusCode == http.StatusCreated {
-		var respCreateRepo properties.RespCreateRepo
-		err = json.NewDecoder(resp.Body).Decode(&respCreateRepo)
-		if err != nil {
-			return nil, err
-		}
-		return &respCreateRepo, nil
-	} else {
+	if resp.StatusCode != http.StatusCreated {
 		return nil, fmt.Errorf("Bad status: %d", resp.StatusCode)
 	}
+
+	var respCreateRepo properties.RespCreateRepo
+	err = json.NewDecoder(resp.Body).Decode(&respCreateRepo)
+	if err != nil {
+		return nil, err
+	}
+	return &respCreateRepo, nil
 }
 
 // https://docs.gitlab.com/ee/api/projects.html#delete-project
-func (m Maintainer) DeleteRepo(req *properties.ReqDeleteRepo) (*http.Response, error) {
+func (m Maintainer) DeleteRepo(req *properties.ReqDeleteRepo) (*properties.RespMessage, error) {
 	resp, err := m.Request("DELETE", m.Config.UrlDeleteProject(req.ProjectId), map[string]string{})
 	if err != nil {
 		return nil, err
 	}
-	if resp.StatusCode == http.StatusAccepted {
-		return resp, err
-	} else {
-		return nil, fmt.Errorf("Bad status: %s", resp.Status)
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusAccepted {
+		return nil, fmt.Errorf("Bad status: %d", resp.StatusCode)
 	}
+	var respDeleteRepo properties.RespMessage
+	err = json.NewDecoder(resp.Body).Decode(&respDeleteRepo)
+	if err != nil {
+		return nil, err
+	}
+	return &respDeleteRepo, nil
 }
 
 func (m Maintainer) LastBuildIsSuccess(req *properties.ReqListPipelines) (bool, error) {
@@ -76,13 +80,15 @@ func (m Maintainer) LastBuildIsSuccess(req *properties.ReqListPipelines) (bool, 
 		return false, err
 	}
 	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return false, fmt.Errorf("Bad status: %d", resp.StatusCode)
+	}
 	var pipelines []properties.RespListPipeline
 	err = json.NewDecoder(resp.Body).Decode(&pipelines)
 	if err != nil {
 		return false, err
 	}
 	return pipelines[0].Status == "success", nil
-
 }
 
 // https://docs.gitlab.com/ee/api/pipelines.html#list-project-pipelines

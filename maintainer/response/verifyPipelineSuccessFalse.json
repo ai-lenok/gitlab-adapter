@@ -1,0 +1,57 @@
+{
+  "status": 200,
+  "body": [
+    {
+      "id": 719490584,
+      "iid": 4,
+      "project_id": 40639016,
+      "sha": "aef387d7b76ec48b086b131d5a0213822c9fd0ca",
+      "ref": "homework",
+      "status": "failed",
+      "source": "push",
+      "created_at": "2022-12-12T06:13:43.168Z",
+      "updated_at": "2022-12-12T06:13:49.317Z",
+      "web_url": "https://gitlab.com/java-school-courses/linux/2022-10/homework-02/-/pipelines/719490584",
+      "name": null
+    },
+    {
+      "id": 699137755,
+      "iid": 3,
+      "project_id": 40639016,
+      "sha": "15ee2645fb381dbf2997e54166d3d1c8507ef9c5",
+      "ref": "main",
+      "status": "failed",
+      "source": "web",
+      "created_at": "2022-11-18T16:32:47.948Z",
+      "updated_at": "2022-11-18T16:32:56.332Z",
+      "web_url": "https://gitlab.com/java-school-courses/linux/2022-10/homework-02/-/pipelines/699137755",
+      "name": null
+    },
+    {
+      "id": 688013116,
+      "iid": 2,
+      "project_id": 40639016,
+      "sha": "15ee2645fb381dbf2997e54166d3d1c8507ef9c5",
+      "ref": "main",
+      "status": "failed",
+      "source": "push",
+      "created_at": "2022-11-07T21:43:49.635Z",
+      "updated_at": "2022-11-07T21:43:57.271Z",
+      "web_url": "https://gitlab.com/java-school-courses/linux/2022-10/homework-02/-/pipelines/688013116",
+      "name": null
+    },
+    {
+      "id": 680953545,
+      "iid": 1,
+      "project_id": 40639016,
+      "sha": "8b69a72ce4eae61fe5c63df4f920168f209c28a2",
+      "ref": "main",
+      "status": "failed",
+      "source": "push",
+      "created_at": "2022-10-30T22:16:10.472Z",
+      "updated_at": "2022-10-30T22:16:15.831Z",
+      "web_url": "https://gitlab.com/java-school-courses/linux/2022-10/homework-02/-/pipelines/680953545",
+      "name": null
+    }
+  ]
+}

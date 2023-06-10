@@ -1,0 +1,18 @@
+{
+  "status": 200,
+  "body": [
+    {
+      "id": 686775836,
+      "iid": 1,
+      "project_id": 40812500,
+      "sha": "23d8eb96bb187f608ec1eb5318d393f007414305",
+      "ref": "homework",
+      "status": "success",
+      "source": "push",
+      "created_at": "2022-11-06T09:18:48.478Z",
+      "updated_at": "2022-11-06T09:18:56.141Z",
+      "web_url": "https://gitlab.com/java-school-courses/linux/2022-10/homework-01-student-01/-/pipelines/686775836",
+      "name": null
+    }
+  ]
+}

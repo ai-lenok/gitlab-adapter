@@ -5,7 +5,6 @@ import (
 	"github.com/ai-lenok/gitlab-adapter/maintainer"
 	"github.com/ai-lenok/gitlab-adapter/properties"
 	"github.com/gin-gonic/gin"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strconv"
@@ -61,15 +60,7 @@ func deleteRepo(context *gin.Context) {
 		context.Status(http.StatusInternalServerError)
 		return
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Println(err)
-		context.Status(http.StatusInternalServerError)
-		return
-	}
-	resp.Body.Close()
-
-	log.Println(string(body))
+	log.Println(resp)
 	context.Status(http.StatusAccepted)
 }
 

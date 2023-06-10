@@ -40,9 +40,62 @@ func TestCreateRepoBadToken(t *testing.T) {
 	assert.EqualValues(t, "Bad status: 401", err.Error())
 }
 
+func TestDeleteRepoSuccess(t *testing.T) {
+	err := mockResponse("response/deleteRepoSuccess.json")
+	assert.Nil(t, err)
+	m := generateTestMaintainer()
+	resp, err := m.DeleteRepo(&properties.ReqDeleteRepo{})
+	assert.NotNil(t, resp)
+	assert.Nil(t, err)
+	assert.EqualValues(t, "202 Accepted", resp.Message)
+}
+
+func TestDeleteRepoBadToken(t *testing.T) {
+	err := mockResponse("response/deleteRepoBadToken.json")
+	assert.Nil(t, err)
+	m := generateTestMaintainer()
+	resp, err := m.DeleteRepo(&properties.ReqDeleteRepo{})
+	assert.Nil(t, resp)
+	assert.NotNil(t, err)
+	assert.EqualValues(t, "Bad status: 401", err.Error())
+}
+
+func TestVerifyPipelineSuccessTrue(t *testing.T) {
+	err := mockResponseArray("response/verifyPipelineSuccessTrue.json")
+	assert.Nil(t, err)
+	m := generateTestMaintainer()
+	resp, err := m.LastBuildIsSuccess(&properties.ReqListPipelines{})
+	assert.Nil(t, err)
+	assert.True(t, resp)
+}
+
+func TestVerifyPipelineSuccessFalse(t *testing.T) {
+	err := mockResponseArray("response/verifyPipelineSuccessFalse.json")
+	assert.Nil(t, err)
+	m := generateTestMaintainer()
+	resp, err := m.LastBuildIsSuccess(&properties.ReqListPipelines{})
+	assert.Nil(t, err)
+	assert.False(t, resp)
+}
+
+func TestVerifyPipelineBadToken(t *testing.T) {
+	err := mockResponseArray("response/verifyPipelineBadToken.json")
+	assert.Nil(t, err)
+	m := generateTestMaintainer()
+	resp, err := m.LastBuildIsSuccess(&properties.ReqListPipelines{})
+	assert.False(t, resp)
+	assert.NotNil(t, err)
+	assert.EqualValues(t, "Bad status: 401", err.Error())
+}
+
 type Response struct {
 	Status int
-	Body   map[string]interface{} `json:"body"`
+	Body   map[string]interface{}
+}
+
+type ResponseArray struct {
+	Status int
+	Body   []map[string]interface{}
 }
 
 type MockClient struct {
@@ -78,6 +131,17 @@ func mockResponse(pathToFile string) error {
 	return nil
 }
 
+func mockResponseArray(pathToFile string) error {
+	response, err := readResponseArray(pathToFile)
+	if err != nil {
+		return err
+	}
+	GetDoFunc = func(*http.Request) (*http.Response, error) {
+		return response, nil
+	}
+	return nil
+}
+
 func readResponse(pathToFile string) (*http.Response, error) {
 	file, err := os.ReadFile(pathToFile)
 	if err != nil {
@@ -85,6 +149,25 @@ func readResponse(pathToFile string) (*http.Response, error) {
 	}
 
 	var response Response
+	err = json.Unmarshal(file, &response)
+	body, err := json.Marshal(response.Body)
+	if err != nil {
+		return nil, err
+	}
+	strBody := string(body)
+	return &http.Response{
+		StatusCode: response.Status,
+		Body:       io.NopCloser(strings.NewReader(strBody)),
+	}, nil
+}
+
+func readResponseArray(pathToFile string) (*http.Response, error) {
+	file, err := os.ReadFile(pathToFile)
+	if err != nil {
+		return nil, err
+	}
+
+	var response ResponseArray
 	err = json.Unmarshal(file, &response)
 	body, err := json.Marshal(response.Body)
 	if err != nil {

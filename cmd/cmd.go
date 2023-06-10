@@ -6,7 +6,6 @@ import (
 	"github.com/ai-lenok/gitlab-adapter/server"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -138,13 +137,7 @@ func deleteRepo(cmd *cobra.Command, args []string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatal(err)
-	}
-	resp.Body.Close()
-
-	log.Println(string(body))
+	log.Println(resp)
 }
 
 func verifyPipelineStatus(cmd *cobra.Command, args []string) {
