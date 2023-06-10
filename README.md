@@ -91,7 +91,7 @@ DELETE http://{{host}}/api/v1/project
 ### CLI
 
 ```shell
-gitlab-adapter verify-pipeline-status --project-id 1000000000
+gitlab-adapter verify-pipeline --project-id 1000000000
 ```
 
 * Return status 0 - success

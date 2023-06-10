@@ -39,7 +39,7 @@ var (
 	}
 
 	verifyPipelineStatusCmd = &cobra.Command{
-		Use:   "verify-pipeline-status",
+		Use:   "verify-pipeline",
 		Short: "Verify that the latest build in the repository was successful",
 		Run:   verifyPipelineStatus,
 	}
@@ -55,7 +55,7 @@ func init() {
 	cobra.OnInitialize(initConfig)
 
 	rootFlags := rootCmd.PersistentFlags()
-	rootFlags.StringVarP(&cfgFile, "config", "c", "", "Path to configuration file (default is './config/application.yml')")
+	rootFlags.StringVarP(&cfgFile, "config", "c", "", "Path to configuration file (default is './config/application.yaml')")
 	rootFlags.String("gitlab.host", "", "GitLab host")
 	rootFlags.String("gitlab.token", "", "Authorization token")
 	viper.BindPFlags(rootFlags)
@@ -81,10 +81,6 @@ func init() {
 	serverFlags.Int("server.port", 8080, "Server port, default 8080")
 	viper.BindPFlags(serverFlags)
 
-	viper.SetEnvPrefix("ga")
-	viper.AutomaticEnv()
-	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
-
 	rootCmd.AddCommand(verifyPipelineStatusCmd)
 	rootCmd.AddCommand(startServerCmd)
 	rootCmd.AddCommand(createRepoCmd)
@@ -93,16 +89,16 @@ func init() {
 
 func initConfig() {
 	if cfgFile != "" {
-		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Search config in home directory with name "application" (without extension).
 		viper.AddConfigPath("./config")
 		viper.SetConfigType("yaml")
 		viper.SetConfigName("application")
 	}
 
+	viper.SetEnvPrefix("ga")
 	viper.AutomaticEnv()
+	viper.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 
 	if err := viper.ReadInConfig(); err == nil {
 		log.Println("Using config file:", viper.ConfigFileUsed())
